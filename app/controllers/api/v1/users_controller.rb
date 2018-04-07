@@ -27,9 +27,15 @@ class Api::V1::UsersController < ApplicationController
       render json: user, status: 200
     else
       render json: { errors: user.errors }, status: 422
-    end
-    
+    end    
   end
+
+  def destroy
+    user = User.find(params[:id])
+    user.destroy
+    head 204
+  end
+  
 
   private
   def user_params
