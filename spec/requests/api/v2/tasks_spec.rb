@@ -4,11 +4,14 @@ RSpec.describe 'Task API' do
   before { host! 'api.taskmanager.test'}
 
   let(:user) { create(:user) }
+  let!(:auth_data) { user.create_new_auth_token }
   let(:headers) do
     {
       'Accept' => 'application/vnd.taskmanager.v2',
       'Content-Type' => Mime[:json].to_s,
-      'Authorization' => user.auth_token
+      'access-token' => auth_data['access-token'],
+      'uid' => auth_data['uid'],
+      'client' => auth_data['client']
     }
   end
 
@@ -41,7 +44,7 @@ RSpec.describe 'Task API' do
       it 'return only the task matching' do
         returned_task_titles = json_body[:data].map { |t| t[:attributes][:title]}
 
-        expect(returned_task_titles).to eq([notebook_task_1.title, notebook_task_2.title])  
+        expect(returned_task_titles).to eq([notebook_task_2.title, notebook_task_1.title])  
       end
     end
   end
